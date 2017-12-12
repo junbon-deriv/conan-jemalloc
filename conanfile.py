@@ -39,11 +39,22 @@ class JemallocConan(ConanFile):
         if self.settings.build_type == "Debug":
             configure_args.append("--enable-debug")
 
+        if tools.os_info.is_macos and self.options.shared:
+            ldflags = os.environ.get("LDFLAGS", "")
+            os.environ["LDFLAGS"] = ldflags + " "
+
         env_build = AutoToolsBuildEnvironment(self)
         env_build.configure(
             configure_dir=self.folder_name,
             args=configure_args
         )
+
+        if tools.os_info.is_macos and self.options.shared:
+            tools.replace_in_file(
+                r"./Makefile",
+                r"DSO_LDFLAGS = -shared -Wl,-install_name,$(LIBDIR)/$(@F)",
+                r"DSO_LDFLAGS = -shared -Wl,-install_name,@rpath/$(@F)"
+            )
 
         env_build.make()
 
