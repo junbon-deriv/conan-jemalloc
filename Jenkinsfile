@@ -93,9 +93,9 @@ def get_pipeline(image_key) {
               --build=outdated
           \""""
 
-          sh """docker . exec ${container_name} ${custom_sh} -c \"
+          sh """docker exec ${container_name} ${custom_sh} -c \"
             cd ${project}
-            conan create ${conan_user}/${conan_pkg_channel} \
+            conan create . ${conan_user}/${conan_pkg_channel} \
               --settings jemalloc:build_type=Release \
               --options jemalloc:shared=True \
               --build=outdated
