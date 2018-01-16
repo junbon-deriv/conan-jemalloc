@@ -1,5 +1,5 @@
 import os
-from conans import ConanFile, CMake
+from conans import ConanFile, CMake, tools
 
 
 class JemallocTestConan(ConanFile):
@@ -20,4 +20,4 @@ class JemallocTestConan(ConanFile):
 
     def test(self):
         os.chdir("bin")
-        self.run(".%sexample" % os.sep)
+        self.run("env && .%sexample" % os.sep)
